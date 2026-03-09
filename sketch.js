@@ -1,114 +1,118 @@
-let cam
-let started=false
-let frozen=false
-let processed
+let cam;
+let started = false;
+let capturedImg = null;
+let shutterBtn;
 
-let startBtn
-let freezeBtn
-let resumeBtn
-let saveBtn
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  pixelDensity(1);
 
-function setup(){
-createCanvas(windowWidth,windowHeight)
-pixelDensity(1)
-processed=createGraphics(width,height)
-processed.pixelDensity(1)
-createUI()
+  cam = createCapture({
+    video: { facingMode: "environment" },
+    audio: false
+  });
+
+  cam.size(width, height);
+  cam.hide();
+
+  cam.elt.setAttribute("playsinline", "");
+  cam.elt.muted = true;
+  cam.elt.autoplay = true;
+  cam.elt.onloadedmetadata = async () => {
+    try {
+      await cam.elt.play();
+      started = true;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  shutterBtn = createButton("");
+  shutterBtn.position(0, 0);
+  shutterBtn.mousePressed(handleShutter);
+  shutterBtn.elt.addEventListener(
+    "touchstart",
+    (e) => {
+      e.preventDefault();
+      handleShutter();
+    },
+    { passive: false }
+  );
+  styleShutter();
 }
 
-function draw(){
-background(0)
+function draw() {
+  background(0);
 
-if(!started||!cam)return
-
-cam.loadPixels()
-
-if(cam.pixels.length>0&&!frozen){
-processCamera()
+  if (started) {
+    image(cam, 0, 0, width, height);
+  }
 }
 
-image(processed,0,0,width,height)
+function styleShutter() {
+  const size = min(width, height) * 0.16;
+  shutterBtn.size(size, size);
+
+  const x = (width - size) / 2;
+  const y = height - size - 34;
+
+  shutterBtn.position(x, y);
+
+  shutterBtn.style("border-radius", "50%");
+  shutterBtn.style("border", "8px solid rgba(255,255,255,0.95)");
+  shutterBtn.style("background", "rgba(255,255,255,0.22)");
+  shutterBtn.style("box-shadow", "0 0 0 6px rgba(0,0,0,0.18) inset");
+  shutterBtn.style("padding", "0");
+  shutterBtn.style("margin", "0");
+  shutterBtn.style("outline", "none");
+  shutterBtn.style("z-index", "10");
 }
 
-function startCamera(){
-if(started)return
-started=true
+async function handleShutter() {
+  if (!started) return;
 
-cam=createCapture({
-video:{facingMode:"environment"},
-audio:false
-})
-
-cam.size(width,height)
-cam.hide()
-cam.elt.setAttribute("playsinline","")
-cam.elt.muted=true
-cam.elt.autoplay=true
-cam.elt.onloadedmetadata=()=>{cam.elt.play()}
+  capturedImg = get();
+  await saveToPhone(capturedImg.canvas);
 }
 
-function processCamera(){
-cam.loadPixels()
-processed.loadPixels()
+async function saveToPhone(canvasEl) {
+  const blob = await canvasToBlob(canvasEl, "image/png");
+  if (!blob) return;
 
-for(let y=0;y<height;y++){
-for(let x=0;x<width;x++){
+  const file = new File([blob], "photo.png", { type: "image/png" });
 
-let p=(x+y*width)*4
+  try {
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: "photo"
+      });
+      return;
+    }
+  } catch (e) {
+    console.log(e);
+  }
 
-let r=cam.pixels[p]
-let g=cam.pixels[p+1]
-let b=cam.pixels[p+2]
-
-let br=(r*2+g*3+b)/6
-
-if(br>140){
-processed.pixels[p]=min(255,r*1.1)
-processed.pixels[p+1]=min(255,g*1.05)
-processed.pixels[p+2]=min(255,b*1.2)
-}else{
-processed.pixels[p]=r*0.6
-processed.pixels[p+1]=g*0.65
-processed.pixels[p+2]=b*0.9
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "photo.png";
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
-processed.pixels[p+3]=255
-}
-}
-
-processed.updatePixels()
-}
-
-function createUI(){
-
-startBtn=createButton("Start")
-startBtn.position(20,20)
-startBtn.mousePressed(startCamera)
-
-freezeBtn=createButton("Freeze")
-freezeBtn.position(20,70)
-freezeBtn.mousePressed(()=>{
-frozen=true
-})
-
-resumeBtn=createButton("Resume")
-resumeBtn.position(20,120)
-resumeBtn.mousePressed(()=>{
-frozen=false
-})
-
-saveBtn=createButton("Save")
-saveBtn.position(20,170)
-saveBtn.mousePressed(saveImage)
+function canvasToBlob(canvas, type = "image/png", quality = 1) {
+  return new Promise((resolve) => {
+    canvas.toBlob((blob) => resolve(blob), type, quality);
+  });
 }
 
-function saveImage(){
-saveCanvas(processed,"photo","png")
-}
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 
-function windowResized(){
-resizeCanvas(windowWidth,windowHeight)
-if(cam)cam.size(width,height)
-processed=createGraphics(width,height)
-processed.pixelDensity(1)
+  if (cam) {
+    cam.size(width, height);
+  }
+
+  styleShutter();
 }
