@@ -35,10 +35,10 @@ function draw() {
    }
 }
 
-async function takePhoto() {
+async function handleShutter() {
   const shot = get();
 
-  const blob = await new Promise(resolve =>
+  const blob = await new Promise((resolve) =>
     shot.canvas.toBlob(resolve, "image/png")
   );
   if (!blob) return;
@@ -47,11 +47,13 @@ async function takePhoto() {
 
   try {
     if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({ files: [file] });
+      await navigator.share({
+        files: [file]
+      });
       return;
     }
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    console.log(err);
   }
 
   const url = URL.createObjectURL(blob);
