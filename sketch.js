@@ -32,18 +32,32 @@ async function handleShutter() {
 
   const file = new File([blob], "photo.png", { type: "image/png" });
 
-  if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    await navigator.share({
-      files: [file],
-      title: "photo"
-    });
+  try {
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file]
+      });
+      return;
+    }
+  } catch (e) {
+    console.log(e);
   }
+
+  // fallback 下载
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "photo.png";
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 function styleShutter() {
   const size = min(width, height) * 0.16;
+
   shutterBtn.size(size, size);
   shutterBtn.position((width - size) / 2, height - size - 34);
+
   shutterBtn.style("border-radius", "50%");
   shutterBtn.style("border", "8px solid white");
   shutterBtn.style("background", "rgba(255,255,255,0.2)");
