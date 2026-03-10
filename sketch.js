@@ -1,5 +1,6 @@
 let cam;
 let shutterBtn;
+let emo = ["🌑","🌑","🌑","🌒","🌓","🌓","🌔","🌕","🌖","🌗","🌗","🌘","🌑","🌑","🌑"];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -26,7 +27,6 @@ function draw() {
       let r = cam.pixels[p];
       let g = cam.pixels[p+1];
       let b = cam.pixels[p+2];
-      let emo = ["🌑","🌑","🌑","🌒","🌓","🌓","🌔","🌕","🌖","🌗","🌗","🌘","🌑","🌑","🌑"];
       let br = (r + g + b)/3;
       let index = floor(map(br, 0, 255, 0, (emo.length-1)));
       textSize(28);
