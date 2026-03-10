@@ -9,11 +9,12 @@ function setup() {
     video: { facingMode: "environment" },
     audio: false
   });
+
   cam.size(width, height);
   cam.hide();
 
   shutterBtn = createButton("");
-  shutterBtn.mousePressed(takePhoto);
+  shutterBtn.mousePressed(handleShutter);
   styleShutter();
 }
 
@@ -22,8 +23,21 @@ function draw() {
   image(cam, 0, 0, width, height);
 }
 
-function takePhoto() {
-  saveCanvas("photo", "png");
+async function handleShutter() {
+  const shot = get();
+
+  const blob = await new Promise(resolve =>
+    shot.canvas.toBlob(resolve, "image/png")
+  );
+
+  const file = new File([blob], "photo.png", { type: "image/png" });
+
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    await navigator.share({
+      files: [file],
+      title: "photo"
+    });
+  }
 }
 
 function styleShutter() {
