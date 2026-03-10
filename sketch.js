@@ -35,8 +35,31 @@ function draw() {
    }
 }
 
-function takePhoto() {
-  saveCanvas("photo", "png");
+async function takePhoto() {
+  const shot = get();
+
+  const blob = await new Promise(resolve =>
+    shot.canvas.toBlob(resolve, "image/png")
+  );
+  if (!blob) return;
+
+  const file = new File([blob], "photo.png", { type: "image/png" });
+
+  try {
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file] });
+      return;
+    }
+  } catch (e) {
+    console.log(e);
+  }
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "photo.png";
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 function styleShutter() {
