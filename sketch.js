@@ -14,22 +14,21 @@ function setup() {
   cam.hide();
 
   shutterBtn = createButton("");
-  shutterBtn.mousePressed(takePhoto);
   styleShutter();
 }
 
 function draw() {
   background(0);
   cam.loadPixels();
-  for(let x = 0; x < windowWidth; x += 30){
-    for(let y = 0; y < windowHeight; y += 30){
+  for(let x = 0; x < windowWidth; x += 25){
+    for(let y = 0; y < windowHeight; y += 25){
       let p = (x + windowWidth * y) * 4 ;
       let r = cam.pixels[p];
       let g = cam.pixels[p+1];
       let b = cam.pixels[p+2];
       let br = (r + g + b)/3;
       let index = floor(map(br, 80, 180, 0, (emo.length-1)));
-      textSize(24);
+      textSize(18);
       text(emo[index],x,y);
       }
    }
