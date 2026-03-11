@@ -1,6 +1,6 @@
 let cam;
 let shutterBtn;
-let emo = ["🌑","🌑","🌑","🌑","🌑","🌒","🌒","🌒","🌒","🌓","🌓","🌔","🌕","🌖","🌗","🌘"];
+let emo = ["🌑","🌑","🌑","🌑","🌑","🌒","🌒","🌒","🌒","🌓","🌓","🌓","🌔","🌔","🌕","🌖","🌗","🌘"];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
