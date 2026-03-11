@@ -74,14 +74,15 @@ function styleShutter() {
   shutterBtn.size(size, size);
   shutterBtn.position((width - size) / 2, height - size - 34);
   shutterBtn.style("border-radius", "50%");
-  shutterBtn.style("border", "8px solid white");
+  shutterBtn.style("border", "7px solid white");
   shutterBtn.style("background", "rgba(255,255,255,0.2)");
 }
 
 function styleSwitch() {
-  const size = min(width, height) * 0.08;
+  const size = min(width, height) * 0.07;
   switchBtn.size(size, size);
-  switchBtn.position(4 * (width - size) / 5, height - size - 76);
+  switchBtn.position(3 * (width - size) / 4, height - size - 88);
   switchBtn.style("border-radius", "25%");
-  switchBtn.style("background", "rgba(255,255,255,0.2)");
+  switchBtn.style("border", "3px solid rgb(126,255,105)");
+  switchBtn.style("background", "rgba(126,255,105,0.2)");
 }
