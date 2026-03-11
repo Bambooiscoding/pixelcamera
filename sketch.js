@@ -5,6 +5,8 @@ let emo = ["🌑","🌑","🌑","🌑","🌒","🌒","🌒","🌓","🌓","🌔"
 function setup() {
   createCanvas(windowWidth, windowHeight);
   pixelDensity(1);
+  textAlign(CENTER,CENTER);
+  textSize(12);
 
   cam = createCapture({
     video: { facingMode: "environment" },
@@ -29,8 +31,7 @@ function draw() {
       let b = cam.pixels[p+2];
       let br = (r + g + b)/3;
       let index = floor(map(br, 0, 255, 0, (emo.length-1)));
-      textSize(12);
-      text(emo[index],x,y);
+      text(emo[index],x-10,y-10);
       }
    }
 }
