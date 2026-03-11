@@ -14,6 +14,7 @@ function setup() {
   cam.hide();
 
   shutterBtn = createButton("");
+  shutterBtn.mousePressed(handleShutter);
   styleShutter();
 }
 
