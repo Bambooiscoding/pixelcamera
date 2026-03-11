@@ -26,7 +26,7 @@ function draw() {
       let r = cam.pixels[p];
       let g = cam.pixels[p+1];
       let b = cam.pixels[p+2];
-      let br = (r + g + b)/3;
+      let br = r * 0.299 + g * 0.587 + b * 0.114;
       let index = floor(map(br, 0, 255, 0, (emo.length-1)));
       textSize(12);
       text(emo[index],x,y);
