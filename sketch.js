@@ -13,7 +13,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   pixelDensity(1);
   textAlign(CENTER,CENTER);
-  textSize(12);
+  textSize(10);
 
   cam = createCapture({
     video: { facingMode: "environment" },
@@ -34,8 +34,8 @@ function setup() {
 function draw() {
   background(0);
   cam.loadPixels();
-  for(let x = 0; x < cam.width; x += 20){
-    for(let y = 0; y < cam.height; y += 20){
+  for(let x = 0; x < cam.width; x += 15){
+    for(let y = 0; y < cam.height; y += 15){
       let p = (x + cam.width * y) * 4 ;
       let r = cam.pixels[p];
       let g = cam.pixels[p+1];
@@ -81,7 +81,7 @@ function styleShutter() {
 function styleSwitch() {
   const size = min(width, height) * 0.07;
   switchBtn.size(size, size);
-  switchBtn.position(3 * (width - size) / 4, height - size - 72);
+  switchBtn.position(3 * (width - size) / 4, height - size - 88);
   switchBtn.style("border-radius", "25%");
   switchBtn.style("border", "3px solid rgb(126,255,105)");
   switchBtn.style("background", "rgba(126,255,105,0.2)");
