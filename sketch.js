@@ -36,24 +36,12 @@ function draw() {
 }
 
 async function handleShutter() {
-  const shot = get();
-
-  const blob = await new Promise((resolve) =>
-    shot.canvas.toBlob(resolve, "image/png")
-  );
-  if (!blob) return;
-
+  const blob = await new Promise(resolve => get().canvas.toBlob(resolve, "image/png"));
   const file = new File([blob], "photo.png", { type: "image/png" });
 
-  try {
-    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({
-        files: [file]
-      });
-      return;
-    }
-  } catch (err) {
-    console.log(err);
+  if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+    await navigator.share({ files: [file] });
+    return;
   }
 
   const url = URL.createObjectURL(blob);
@@ -71,10 +59,4 @@ function styleShutter() {
   shutterBtn.style("border-radius", "50%");
   shutterBtn.style("border", "8px solid white");
   shutterBtn.style("background", "rgba(255,255,255,0.2)");
-}
-
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-  cam.size(width, height);
-  styleShutter();
 }
