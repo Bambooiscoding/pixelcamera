@@ -26,7 +26,7 @@ function setup() {
   shutterBtn.mousePressed(handleShutter);
   styleShutter();
 
-  switchBtn = createButton("✦");
+  switchBtn = createButton("❇️");
   switchBtn.mousePressed(switchEffect);
   styleSwitch();
 }
@@ -79,19 +79,9 @@ function styleShutter() {
 }
 
 function styleSwitch() {
-  const big = min(width, height) * 0.16;
-  const small = big * 0.42;
-
-  switchBtn.size(small, small);
-  switchBtn.position(
-    (width + big) / 2 + 14,
-    height - big - 34 + (big - small) / 2
-  );
-
-  switchBtn.style("border-radius", "50%");
-  switchBtn.style("border", "3px solid white");
+  const size = min(width, height) * 0.08;
+  switchBtn.size(size, size);
+  switchBtn.position(4 * (width - size) / 5, height - size - 76);
+  switchBtn.style("border-radius", "25%");
   switchBtn.style("background", "rgba(255,255,255,0.2)");
-  switchBtn.style("color", "white");
-  switchBtn.style("font-size", (small * 0.35) + "px");
-  switchBtn.style("padding", "0");
 }
